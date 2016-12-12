@@ -2,7 +2,7 @@ public interface Game {
 
     public void nextTurn();
 
-    public void endGame();
+    public boolean endGame();
 
     public void towerAttack();
 

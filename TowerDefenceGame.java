@@ -1,3 +1,7 @@
+import sun.java2d.Disposer;
+
+import static com.sun.deploy.uitoolkit.ToolkitStore.dispose;
+
 public class TowerDefenceGame implements Game {
 	
 	    private Monster monster;
@@ -7,6 +11,9 @@ public class TowerDefenceGame implements Game {
 	    private movements[] pathOne = {movements.FRONT, movements.FRONT,
 	    		movements.UP, movements.FRONT, movements.FRONT, movements.DOWN,
 	    		movements.DOWN, movements.FRONT, movements.FRONT, movements.FRONT};
+        private movements[] pathTwo = {movements.FRONT, movements.FRONT, movements.DOWN,
+                movements.FRONT, movements.FRONT, movements.UP, movements.FRONT,
+                movements.FRONT, movements.FRONT};
 	    private int n = 0;
 	    
 	public TowerDefenceGame(){
@@ -20,7 +27,7 @@ public class TowerDefenceGame implements Game {
     	
     	towerAttack();
     	
-        movements move = pathOne[n];
+        movements move = pathTwo[n];
 
         switch (move) {
             case FRONT:
@@ -33,20 +40,23 @@ public class TowerDefenceGame implements Game {
                 monster.getCurrentPosition().moveDown();
                 break;
         }
-        endGame();
         n++;
     }
 
     @Override
-    public void endGame() {
+    public boolean endGame() {
+
+        boolean end = false;
+
     	if(getMonsterHealth() <= 0){
-    		System.exit(0);
+            end = true;
     	}
     	else if(monster.getCurrentPosition().getXPosition() == 7) {
             System.out.println(getMonsterHealth());
             System.out.println(monster.getCurrentPosition().toString() + " The monster made it through!");
-            System.exit(0);
+            end = true;
         }
+        return end;
     }
 
     @Override
@@ -63,8 +73,12 @@ public class TowerDefenceGame implements Game {
     public int getMonsterHealth() {
         return monster.getHealth();
     }
+
     public Position getMonsterPosition(){
     	return monster.getCurrentPosition();
     }
+
+    @Override
+    public String toString() { return " " + getMonsterHealth(); }
 }
 

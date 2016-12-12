@@ -5,6 +5,8 @@ import javax.swing.Timer;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.image.ImageObserver;
+import java.awt.image.ImageProducer;
 import java.net.URL;
 import java.util.*;
 import java.util.List;
@@ -15,11 +17,14 @@ import java.util.List;
 public class GUITowerDefence extends JFrame implements ActionListener {
 
     private final Map<Position, JPanel> positionsPanels = new HashMap<>();
-    private final MonsterPanel monsterPanel = new MonsterPanel();
     private final Timer timer;
-    private static final int SPEED = 1000;
-    private static final int PAUSE = 1000;
+    private static final int SPEED = 500;
+    private static final int PAUSE = 500;
     private JPanel lands = getLandscapePanel();
+    private TowerDefenceGame TwrDfc;
+    private JLabel monsterLabel = getIconLabel("icons/monster10.gif");
+    private JLabel health = new JLabel();
+    private MonsterPanel monsterPanel;
 
     public static void main(String[] args) {
         new GUITowerDefence("Tower Defence").setVisible(true);
@@ -27,11 +32,14 @@ public class GUITowerDefence extends JFrame implements ActionListener {
 
     public GUITowerDefence(String title) {
         super(title);
-        TowerDefenceGame TwrDfc = buildTowerDefence();
+        this.TwrDfc = buildTowerDefence();
         this.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
         this.setLayout(new BorderLayout());
         this.setResizable(false);
-        init();
+
+        //init1();
+        init2();
+
         this.add(lands, BorderLayout.CENTER);
         this.setSize(800, 300);
         timer = new Timer(SPEED, this);
@@ -47,32 +55,106 @@ public class GUITowerDefence extends JFrame implements ActionListener {
     @Override
     public void actionPerformed(ActionEvent e) {
 
+        System.out.println(TwrDfc.getMonsterHealth());
+        System.out.println(TwrDfc.getMonsterPosition().toString());
+
+
+        TwrDfc.nextTurn();
+
+        monsterPanel.setHealth(TwrDfc.getMonsterHealth());
+        positionsPanels.get(TwrDfc.getMonsterPosition()).add(monsterPanel);
+
+
+        repaint();
+
+        System.out.println(":::::::::::::::::::::::::::::::::");
+
+        if(TwrDfc.endGame()){
+            positionsPanels.get(TwrDfc.getMonsterPosition()).add(monsterPanel);
+            monsterPanel.setHealth(TwrDfc.getMonsterHealth());
+            timer.stop();
+            dispose();
+        }
+
 
     }
 
-    // ---------- Render (if actionPerformed to large) ---------------
-
-    public void render(){
-       // JPanel greenPanel = new JPanel();
-        //positionsPanels
-    }
-
-    public void init(){
+    public void init1(){
         lands.setLayout(new GridLayout(3,8));
         JPanel[] place = new JPanel[24];
         int p = 0;
 
-        for(int i = 0; i < 3; i = i + 1) {
+        for(int i = 2; i >= 0; i = i - 1) {
             for (int n = 0; n < 8; n = n + 1) {
                 place[p]= new JPanel();
                 lands.add(place[p]);
-                positionsPanels.put(new Position(i,n), place[p]);
+                positionsPanels.put(new Position(n,i), place[p]);
                 p++;
             }
         }
 
-        place[1].setBackground(Color.green);
+        int[] greenPos = new int[]{0,1,5,6,7,11,13,14,15,16,17,18,19};
+        int[] whitePos = new int[]{2,3,4,8,9,10,12,20,21,22,23};
 
+        for(int i = 0; i < greenPos.length; i++){
+            place[greenPos[i]].setBackground(Color.green);
+            place[greenPos[i]].setBorder(BorderFactory.createLineBorder(Color.black));
+        }
+
+        for(int n = 0; n < whitePos.length; n++){
+            place[whitePos[n]].setBackground(Color.white);
+            place[whitePos[n]].setBorder(BorderFactory.createLineBorder(Color.black));
+        }
+
+        JLabel tower1 = getIconLabel("icons/tower-icon.png");
+        JLabel tower2 = getIconLabel("icons/tower-icon.png");
+
+        place[5].add(tower1);
+        place[11].add(tower2);
+        place[8].add(monsterLabel);
+
+        monsterPanel = new MonsterPanel();
+        positionsPanels.get(TwrDfc.getMonsterPosition()).add(monsterPanel);
+        monsterPanel.setHealth(TwrDfc.getMonsterHealth());
+
+    }
+
+    public void init2(){
+        lands.setLayout(new GridLayout(3,8));
+        JPanel[] place = new JPanel[24];
+        int p = 0;
+
+        for(int i = 2; i >=0; i = i - 1) {
+            for (int n = 0; n < 8; n = n + 1) {
+                place[p]= new JPanel();
+                lands.add(place[p]);
+                positionsPanels.put(new Position(n,i), place[p]);
+                p++;
+            }
+        }
+
+        int[] greenPos = new int[]{0,1,2,3,4,5,6,7,11,16,17,21,22,23};
+        int[] whitePos = new int[]{8,9,10,12,13,14,15,18,19,20};
+
+        for(int i = 0; i < greenPos.length; i++){
+            place[greenPos[i]].setBackground(Color.green);
+            place[greenPos[i]].setBorder(BorderFactory.createLineBorder(Color.black));
+        }
+
+        for(int n = 0; n < whitePos.length; n++){
+            place[whitePos[n]].setBackground(Color.white);
+            place[whitePos[n]].setBorder(BorderFactory.createLineBorder(Color.black));
+        }
+
+        JLabel tower1 = getIconLabel("icons/tower-icon.png");
+        JLabel tower2 = getIconLabel("icons/tower-icon.png");
+
+        place[5].add(tower1);
+        place[11].add(tower2);
+
+        monsterPanel = new MonsterPanel();
+        positionsPanels.get(TwrDfc.getMonsterPosition()).add(monsterPanel);
+        monsterPanel.setHealth(TwrDfc.getMonsterHealth());
 
     }
 
@@ -106,9 +188,11 @@ public class GUITowerDefence extends JFrame implements ActionListener {
 
         private JLabel monster;
         private JLabel health = new JLabel();
+        //private JPanel panel =
+
 
         public MonsterPanel() {
-            this.setBackground(Color.WHITE);
+            this.setOpaque(false);
             this.setLayout(new BorderLayout());
             this.monster = getIconLabel("icons/monster10.gif");
             health.setFont(new Font("Serif", Font.BOLD, 10));
@@ -119,6 +203,12 @@ public class GUITowerDefence extends JFrame implements ActionListener {
         public void setHealth(int health) {
             this.health.setText(String.valueOf(health));
         }
+
+        public JLabel getMonster(){ return this.monster; }
+
+        public JLabel getHealth() { return this.health; }
+
+
     }
 
 }
