@@ -1,13 +1,9 @@
-import sun.java2d.Disposer;
-
-import static com.sun.deploy.uitoolkit.ToolkitStore.dispose;
-
 public class TowerDefenceGame implements Game {
 	
 	    private Monster monster;
 	    private Tower towerOne;
 	    private Tower towerTwo;
-	    private enum movements {FRONT, UP, DOWN}
+	    private enum movements {FRONT, UP, DOWN};
 	    private movements[] pathOne = {movements.FRONT, movements.FRONT,
 	    		movements.UP, movements.FRONT, movements.FRONT, movements.DOWN,
 	    		movements.DOWN, movements.FRONT, movements.FRONT, movements.FRONT};
@@ -26,8 +22,10 @@ public class TowerDefenceGame implements Game {
     public void nextTurn() {
     	
     	towerAttack();
-    	
-        movements move = pathTwo[n];
+
+        //To change course, choose pathOne or pathTwo and uncomment the
+        //corresponding init in the GUI
+        movements move = pathOne[n];
 
         switch (move) {
             case FRONT:
@@ -48,12 +46,17 @@ public class TowerDefenceGame implements Game {
 
         boolean end = false;
 
-    	if(getMonsterHealth() <= 0){
+    	if(monster.getCurrentPosition().getXPosition() == 7) {
             end = true;
-    	}
-    	else if(monster.getCurrentPosition().getXPosition() == 7) {
-            System.out.println(getMonsterHealth());
-            System.out.println(monster.getCurrentPosition().toString() + " The monster made it through!");
+        }
+        return end;
+    }
+
+    public boolean deadMonster() {
+
+        boolean end = false;
+
+        if(getMonsterHealth() <= 0){
             end = true;
         }
         return end;

@@ -5,7 +5,7 @@ public class Monster {
     private Position currentPosition;
 
     public Monster (){
-        this.health=150;
+        this.health = 50;
         Position start = new Position(0, 1);
         this.currentPosition = start;
     }

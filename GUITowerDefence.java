@@ -1,15 +1,10 @@
-import javafx.geometry.Pos;
-
 import javax.swing.*;
 import javax.swing.Timer;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.image.ImageObserver;
-import java.awt.image.ImageProducer;
 import java.net.URL;
 import java.util.*;
-import java.util.List;
 
 /**
  * Very, very basic GUI for very basic "Tower Defence" game
@@ -22,8 +17,6 @@ public class GUITowerDefence extends JFrame implements ActionListener {
     private static final int PAUSE = 500;
     private JPanel lands = getLandscapePanel();
     private TowerDefenceGame TwrDfc;
-    private JLabel monsterLabel = getIconLabel("icons/monster10.gif");
-    private JLabel health = new JLabel();
     private MonsterPanel monsterPanel;
 
     public static void main(String[] args) {
@@ -37,8 +30,9 @@ public class GUITowerDefence extends JFrame implements ActionListener {
         this.setLayout(new BorderLayout());
         this.setResizable(false);
 
-        //init1();
-        init2();
+        //To change course, uncomment one of the inits and choose path in TwrDfc-constructor
+        init1();
+        //init2();
 
         this.add(lands, BorderLayout.CENTER);
         this.setSize(800, 300);
@@ -55,25 +49,30 @@ public class GUITowerDefence extends JFrame implements ActionListener {
     @Override
     public void actionPerformed(ActionEvent e) {
 
-        System.out.println(TwrDfc.getMonsterHealth());
-        System.out.println(TwrDfc.getMonsterPosition().toString());
+        if(!TwrDfc.endGame() && !TwrDfc.deadMonster()) {
 
+            TwrDfc.nextTurn();
 
-        TwrDfc.nextTurn();
-
-        monsterPanel.setHealth(TwrDfc.getMonsterHealth());
-        positionsPanels.get(TwrDfc.getMonsterPosition()).add(monsterPanel);
-
-
-        repaint();
-
-        System.out.println(":::::::::::::::::::::::::::::::::");
-
-        if(TwrDfc.endGame()){
-            positionsPanels.get(TwrDfc.getMonsterPosition()).add(monsterPanel);
             monsterPanel.setHealth(TwrDfc.getMonsterHealth());
+            positionsPanels.get(TwrDfc.getMonsterPosition()).add(monsterPanel);
+
+            repaint();
+        }
+
+        else if (TwrDfc.deadMonster()){
+
             timer.stop();
             dispose();
+
+            JOptionPane.showMessageDialog(null, "The monster died, you win!");
+        }
+
+        else {
+
+            timer.stop();
+            dispose();
+
+            JOptionPane.showMessageDialog(null, "Game Over!");
         }
 
 
@@ -111,7 +110,6 @@ public class GUITowerDefence extends JFrame implements ActionListener {
 
         place[5].add(tower1);
         place[11].add(tower2);
-        place[8].add(monsterLabel);
 
         monsterPanel = new MonsterPanel();
         positionsPanels.get(TwrDfc.getMonsterPosition()).add(monsterPanel);
