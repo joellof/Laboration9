@@ -8,7 +8,6 @@ public class Tower {
     public void shoot(Monster monster){
         Random r = new Random();
         boolean hitChance = r.nextBoolean();
-        //System.out.println(hitChance);
         if(hitChance)
         monster.loseHealth();
     }

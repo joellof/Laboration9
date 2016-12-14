@@ -13,7 +13,7 @@ public class Test {
         System.out.println(game.getMonsterHealth());
         System.out.println(game.getMonsterPosition().toString());
         
-        while(game.getMonsterHealth() > 0){
+        while(!game.endGame()){
         	game.nextTurn();
         	
         	System.out.println(game.getMonsterHealth());

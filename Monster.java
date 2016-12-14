@@ -1,8 +1,8 @@
 
 public class Monster {
     private int health;
-    private int hit = 10;
-    private Position currentPosition;
+    private final int hit = 10;
+    private final Position currentPosition;
 
     public Monster (){
         this.health = 50;

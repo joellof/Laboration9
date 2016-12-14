@@ -41,6 +41,7 @@ public class TowerDefenceGame implements Game {
         n++;
     }
 
+    //Returns true if the monster finishes the course abd the player loses
     @Override
     public boolean endGame() {
 
@@ -52,6 +53,8 @@ public class TowerDefenceGame implements Game {
         return end;
     }
 
+    //Returns true if the player killed the monster and won
+    @Override
     public boolean deadMonster() {
 
         boolean end = false;
@@ -77,6 +80,7 @@ public class TowerDefenceGame implements Game {
         return monster.getHealth();
     }
 
+    @Override
     public Position getMonsterPosition(){
     	return monster.getCurrentPosition();
     }

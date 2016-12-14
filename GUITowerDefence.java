@@ -16,8 +16,10 @@ public class GUITowerDefence extends JFrame implements ActionListener {
     private static final int SPEED = 500;
     private static final int PAUSE = 500;
     private JPanel lands = getLandscapePanel();
-    private TowerDefenceGame TwrDfc;
+    private TowerDefenceGame twrDfc;
     private MonsterPanel monsterPanel;
+    private static final int row = 2;
+    private static final int col = 8;
 
     public static void main(String[] args) {
         new GUITowerDefence("Tower Defence").setVisible(true);
@@ -25,7 +27,7 @@ public class GUITowerDefence extends JFrame implements ActionListener {
 
     public GUITowerDefence(String title) {
         super(title);
-        this.TwrDfc = buildTowerDefence();
+        this.twrDfc = buildTowerDefence();
         this.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
         this.setLayout(new BorderLayout());
         this.setResizable(false);
@@ -38,10 +40,9 @@ public class GUITowerDefence extends JFrame implements ActionListener {
         this.setSize(800, 300);
         timer = new Timer(SPEED, this);
         timer.setInitialDelay(PAUSE);
-        // Will generate ActionEvents
+
         timer.start();
         lands.setVisible(true);
-
     }
 
     // ---------- Event handling --------------------
@@ -49,17 +50,17 @@ public class GUITowerDefence extends JFrame implements ActionListener {
     @Override
     public void actionPerformed(ActionEvent e) {
 
-        if(!TwrDfc.endGame() && !TwrDfc.deadMonster()) {
+        if(!twrDfc.endGame() && !twrDfc.deadMonster()) {
 
-            TwrDfc.nextTurn();
+            twrDfc.nextTurn();
 
-            monsterPanel.setHealth(TwrDfc.getMonsterHealth());
-            positionsPanels.get(TwrDfc.getMonsterPosition()).add(monsterPanel);
+            monsterPanel.setHealth(twrDfc.getMonsterHealth());
+            positionsPanels.get(twrDfc.getMonsterPosition()).add(monsterPanel);
 
             repaint();
         }
 
-        else if (TwrDfc.deadMonster()){
+        else if (twrDfc.deadMonster()){
 
             timer.stop();
             dispose();
@@ -74,17 +75,16 @@ public class GUITowerDefence extends JFrame implements ActionListener {
 
             JOptionPane.showMessageDialog(null, "Game Over!");
         }
-
-
     }
 
+    //Works with enum pathOne in TwrDfc
     public void init1(){
         lands.setLayout(new GridLayout(3,8));
         JPanel[] place = new JPanel[24];
         int p = 0;
 
-        for(int i = 2; i >= 0; i = i - 1) {
-            for (int n = 0; n < 8; n = n + 1) {
+        for(int i = row; i >= 0; i = i - 1) {
+            for (int n = 0; n < col; n = n + 1) {
                 place[p]= new JPanel();
                 lands.add(place[p]);
                 positionsPanels.put(new Position(n,i), place[p]);
@@ -112,18 +112,19 @@ public class GUITowerDefence extends JFrame implements ActionListener {
         place[11].add(tower2);
 
         monsterPanel = new MonsterPanel();
-        positionsPanels.get(TwrDfc.getMonsterPosition()).add(monsterPanel);
-        monsterPanel.setHealth(TwrDfc.getMonsterHealth());
+        positionsPanels.get(twrDfc.getMonsterPosition()).add(monsterPanel);
+        monsterPanel.setHealth(twrDfc.getMonsterHealth());
 
     }
 
+    //Works with enum pathTwo in TwrDfc
     public void init2(){
         lands.setLayout(new GridLayout(3,8));
         JPanel[] place = new JPanel[24];
         int p = 0;
 
-        for(int i = 2; i >=0; i = i - 1) {
-            for (int n = 0; n < 8; n = n + 1) {
+        for(int i = row; i >=0; i = i - 1) {
+            for (int n = 0; n < col; n = n + 1) {
                 place[p]= new JPanel();
                 lands.add(place[p]);
                 positionsPanels.put(new Position(n,i), place[p]);
@@ -151,14 +152,11 @@ public class GUITowerDefence extends JFrame implements ActionListener {
         place[11].add(tower2);
 
         monsterPanel = new MonsterPanel();
-        positionsPanels.get(TwrDfc.getMonsterPosition()).add(monsterPanel);
-        monsterPanel.setHealth(TwrDfc.getMonsterHealth());
-
+        positionsPanels.get(twrDfc.getMonsterPosition()).add(monsterPanel);
+        monsterPanel.setHealth(twrDfc.getMonsterHealth());
     }
 
-
     // ---------- Build model ----------
-
 
     private TowerDefenceGame buildTowerDefence() {
         return new TowerDefenceGame();
@@ -171,7 +169,6 @@ public class GUITowerDefence extends JFrame implements ActionListener {
         return new JPanel(); // Just for now ...
     }
 
-    // Given a file name returns a label with an icon
     private JLabel getIconLabel(String fileName) {
         URL url = this.getClass().getResource(fileName);
         ImageIcon ii = new ImageIcon(url);
@@ -181,13 +178,11 @@ public class GUITowerDefence extends JFrame implements ActionListener {
 
 
     // -------------- Inner class ------------------
-    // Use if you like
+
     private class MonsterPanel extends JPanel {
 
         private JLabel monster;
         private JLabel health = new JLabel();
-        //private JPanel panel =
-
 
         public MonsterPanel() {
             this.setOpaque(false);

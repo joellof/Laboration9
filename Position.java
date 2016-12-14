@@ -13,7 +13,6 @@ public class Position {
 
         if (x != position.x) return false;
         return y == position.y;
-
     }
 
     @Override
@@ -47,9 +46,7 @@ public class Position {
     public int getYPosition (){
         return this.y;
     }
-    
-    
-    
+
     @Override
     public String toString(){
     	return "(" + this.x + "," + this.y + ")";
